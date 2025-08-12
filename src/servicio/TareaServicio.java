@@ -6,8 +6,58 @@ package servicio;
 
 /**
  *
- * @author jaine
+ * @author jainer Said Garcia Gonzalez
  */
+
+
+import dao.TareaDAO;
+import dominio.Tarea;
+import dominio.ExcepcionValidacion;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 public class TareaServicio {
-    
+    private TareaDAO tareaDAO;
+    private Stack<Tarea> pilaEliminadas; 
+
+    public TareaServicio() {
+        tareaDAO = new TareaDAO();
+        pilaEliminadas = new Stack<>();
+    }
+
+    public void agregarTarea(Tarea tarea) throws ExcepcionValidacion, SQLException {
+        validarTarea(tarea);
+        tareaDAO.insertarTarea(tarea);
+    }
+
+    public List<Tarea> listarTareas() throws SQLException {
+        return tareaDAO.listarTareas();
+    }
+
+    public void eliminarTarea(Tarea tarea) throws SQLException {
+        tareaDAO.eliminarTarea(tarea.getIdTarea());
+        pilaEliminadas.push(tarea);
+    }
+
+    public Tarea deshacerEliminacion() throws SQLException {
+        if (!pilaEliminadas.isEmpty()) {
+            Tarea restaurada = pilaEliminadas.pop();
+            tareaDAO.insertarTarea(restaurada);
+            return restaurada;
+        }
+        return null;
+    }
+
+    private void validarTarea(Tarea tarea) throws ExcepcionValidacion {
+        if (tarea.getTitulo() == null || tarea.getTitulo().trim().isEmpty()) {
+            throw new ExcepcionValidacion("El título no puede estar vacío.");
+        }
+        if (tarea.getPrioridad() < 1 || tarea.getPrioridad() > 3) {
+            throw new ExcepcionValidacion("La prioridad debe estar entre 1 y 3.");
+        }
+    }
 }
+

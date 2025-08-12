@@ -16,9 +16,6 @@ import java.util.List;
  * @author jainer Said Garcia Gonzalez
  */
 
-
-
-
 public class TareaDAO {
 
     // Método  1 insertar tarea
