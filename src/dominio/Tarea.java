@@ -21,6 +21,18 @@ public class Tarea {
     private LocalDate creado;
     private LocalDate modificado;
     
+    //Constructor
+    public Tarea(int idTarea, String titulo, int prioridad, boolean estado, boolean especial, Date fecha, LocalDate creado, LocalDate modificado) {
+        this.idTarea = idTarea;
+        this.titulo = titulo;
+        this.prioridad = prioridad;
+        this.estado = estado;
+        this.especial = especial;
+        this.fecha = fecha;
+        this.creado = creado;
+        this.modificado = modificado;
+    }
+    
     
     
     
