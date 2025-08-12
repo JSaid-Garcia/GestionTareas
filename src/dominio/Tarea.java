@@ -33,7 +33,11 @@ public class Tarea {
         this.modificado = modificado;
     }
 
-    
+    public Tarea(int aInt, String string, int aInt0, boolean aBoolean, boolean aBoolean0, LocalDate toLocalDate) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+
     
     //Setters y getters
     
@@ -102,17 +106,5 @@ public class Tarea {
     public LocalDate getModificado() {
         return modificado;
     }
-
-    
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+  
 }
