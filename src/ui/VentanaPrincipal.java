@@ -3,6 +3,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package ui;
+import dominio.ExcepcionValidacion;
+import dominio.Tarea;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import servicio.TareaServicio;
+
 
 /**
  *
@@ -13,9 +28,46 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form VentanaPrincipal
      */
+    private Stack<Tarea> pilaEliminadas = new Stack<>();
+    private TareaServicio tareaServicio = new TareaServicio();
+    
     public VentanaPrincipal() {
         initComponents();
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        txtFecha.setText(sdf.format(new Date()));
+        
+        cargarTareas();
     }
+    
+    private void cargarTareas() {
+    try {
+        TareaServicio servicio = new TareaServicio();
+        List<Tarea> tareas = servicio.listarTareas();
+
+        DefaultTableModel modelo = new DefaultTableModel(
+            new Object[]{"ID", "Título", "Prioridad", "Estado", "Especial", "Fecha"}, 0
+        );
+
+        for (Tarea t : tareas) {
+            modelo.addRow(new Object[]{
+                t.getIdTarea(),
+                t.getTitulo(),
+                t.getPrioridad(),
+                t.isEstado() ? "Hecho" : "Pendiente",
+                t.isEspecial(),
+                t.getFecha()
+            });
+        }
+
+        TablaTareas.setModel(modelo);
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error al cargar tareas: " + ex.getMessage());
+    }
+}
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -26,21 +78,250 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        lblTitulo = new javax.swing.JLabel();
+        cbmPrioridad = new javax.swing.JLabel();
+        lblFecha = new javax.swing.JLabel();
+        txtTitulo = new javax.swing.JTextField();
+        txtFecha = new javax.swing.JTextField();
+        cmbPrioridad = new javax.swing.JComboBox<>();
+        btnAgregar = new javax.swing.JButton();
+        chkEspecial = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TablaTareas = new javax.swing.JTable();
+        btnAlternar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnDeshacer = new javax.swing.JButton();
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        lblTitulo.setText("Titulo");
+
+        cbmPrioridad.setText("Prioridad");
+
+        lblFecha.setText("Fecha");
+
+        txtFecha.setName("txtFecha"); // NOI18N
+
+        cmbPrioridad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Alta", "Media", "Baja", " " }));
+
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        chkEspecial.setText("Especial");
+
+        TablaTareas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(TablaTareas);
+
+        btnAlternar.setText("Alternar");
+        btnAlternar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlternarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnDeshacer.setText("Deshacer");
+        btnDeshacer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeshacerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 518, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(37, 37, 37)
+                                .addComponent(cbmPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(33, 33, 33)
+                                .addComponent(cmbPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(42, 42, 42)
+                                .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(28, 28, 28)
+                        .addComponent(chkEspecial))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAgregar)
+                        .addGap(42, 42, 42)
+                        .addComponent(btnAlternar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEliminar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDeshacer)))
+                .addContainerGap(167, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 426, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cbmPrioridad)
+                        .addComponent(lblFecha))
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(chkEspecial))
+                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnAlternar)
+                    .addComponent(btnEliminar)
+                    .addComponent(btnDeshacer))
+                .addContainerGap(149, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        // TODO add your handling code here: 
+    String titulo = txtTitulo.getText().trim();
+    int prioridad = cmbPrioridad.getSelectedIndex() + 1; // 1 = Alta, 2 = Media, 3 = Baja
+    boolean especial = chkEspecial.isSelected();
+    boolean estado = false; 
+
+    Date fecha = null;
+    String textoFecha = txtFecha.getText().trim();
+
+    if (!textoFecha.isEmpty()) {
+        try {
+            fecha = java.sql.Date.valueOf(textoFecha); 
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, "Formato de fecha inválido. Usa yyyy-MM-dd");
+            return;
+        }
+    }
+
+        int idTarea = 0;
+        LocalDate creado = LocalDate.now();
+        LocalDate modificado = LocalDate.now();
+
+        Tarea tarea = new Tarea(idTarea, titulo, prioridad, estado, especial, fecha, creado, modificado);
+
+    try {
+        TareaServicio servicio = new TareaServicio();
+        servicio.agregarTarea(tarea);
+        JOptionPane.showMessageDialog(this, "Tarea agregada correctamente.");
+        cargarTareas();
+    } catch (ExcepcionValidacion ex) {
+        JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error de base de datos: " + ex.getMessage());
+    }
+        
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnAlternarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlternarActionPerformed
+        int fila = TablaTareas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una tarea para alternar el estado.");
+            return;
+        }
+
+        int idTarea = (int) TablaTareas.getValueAt(fila, 0);
+        try {
+            TareaServicio servicio = new TareaServicio();
+            servicio.alternarEstado(idTarea);
+            cargarTareas();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al alternar estado: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnAlternarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        int fila = TablaTareas.getSelectedRow();
+if (fila == -1) {
+    JOptionPane.showMessageDialog(this, "Seleccione una tarea para eliminar.");
+    return;
+}
+
+int idTarea = (int) TablaTareas.getValueAt(fila, 0);
+String titulo = (String) TablaTareas.getValueAt(fila, 1);
+int prioridad = (int) TablaTareas.getValueAt(fila, 2);
+String estado = (String) TablaTareas.getValueAt(fila, 3);
+
+String especialStr = TablaTareas.getValueAt(fila, 4).toString();
+boolean especial = Boolean.parseBoolean(especialStr);
+
+java.sql.Date fechaSQL = (java.sql.Date) TablaTareas.getValueAt(fila, 5);
+LocalDate fecha = (fechaSQL != null) ? fechaSQL.toLocalDate() : null;
+
+LocalDate creado = LocalDate.now();
+LocalDate modificado = LocalDate.now();
+
+pilaEliminadas.push(new Tarea(idTarea, titulo, prioridad, estado.equals("Hecho"), especial, fechaSQL, creado, modificado));
+
+try {
+    tareaServicio.marcarEliminada(idTarea);
+    cargarTareas();
+    JOptionPane.showMessageDialog(this, "Eliminado correctamente.");
+} catch (SQLException ex) {
+    JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
+}
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerActionPerformed
+        // TODO add your handling code here:
+        if (pilaEliminadas.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay eliminaciones para deshacer.");
+            return;
+        }
+
+        Tarea ultima = pilaEliminadas.pop();
+        try {
+            tareaServicio.restaurarTarea((int) ultima.getId());
+            cargarTareas();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al restaurar tarea: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnDeshacerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +359,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable TablaTareas;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnAlternar;
+    private javax.swing.JButton btnDeshacer;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JLabel cbmPrioridad;
+    private javax.swing.JCheckBox chkEspecial;
+    private javax.swing.JComboBox<String> cmbPrioridad;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblTitulo;
+    private javax.swing.JTextField txtFecha;
+    private javax.swing.JTextField txtTitulo;
     // End of variables declaration//GEN-END:variables
 }

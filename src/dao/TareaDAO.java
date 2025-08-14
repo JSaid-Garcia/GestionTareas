@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,31 +35,76 @@ public class TareaDAO {
             stmt.executeUpdate();
         }
     }
+    
+    public void alternarEstado(int idTarea) throws SQLException {
+        String sql = "UPDATE Tarea SET estado = CASE WHEN estado = 0 THEN 1 ELSE 0 END WHERE idTarea = ?";
+
+    try (Connection conn = ConexionBD.conectar();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, idTarea);
+        stmt.executeUpdate();
+    }
+    }
+    
+    public void marcarEliminada(int idTarea) throws SQLException {
+    // PostgreSQL/MySQL (BOOLEAN):
+    String sql = "UPDATE Tarea SET eliminada = 1 WHERE idTarea = ?";
+
+    // SQL Server/Oracle (0/1):
+    // String sql = "UPDATE Tarea SET eliminada = 1 WHERE id = ?";
+
+    try (Connection conn = ConexionBD.conectar();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, idTarea);
+        stmt.executeUpdate();
+    }
+}
 
     // Método 2 listar tareas
-    public List<Tarea> listarTareas() throws SQLException {
-        List<Tarea> tareas = new ArrayList<>();
-        String sql = "SELECT * FROM Tarea ORDER BY fecha";
+   public List<Tarea> listarTareas() throws SQLException {
+    String sql = "SELECT idTarea, titulo, prioridad, estado, especial, fecha, creado, modificado " +
+                 "FROM Tarea " +
+                 "WHERE COALESCE(eliminada, 0) = 0 " + 
+                 "ORDER BY idTarea";
 
-        try (Connection conn = ConexionBD.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+    List<Tarea> lista = new ArrayList<>();
+    try (Connection conn = ConexionBD.conectar();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                Tarea tarea = new Tarea(
-                    rs.getInt("idTarea"),
-                    rs.getString("titulo"),
-                    rs.getInt("prioridad"),
-                    rs.getBoolean("estado"),
-                    rs.getBoolean("especial"),
-                    rs.getDate("fecha").toLocalDate()
-                );
-                tareas.add(tarea);
-            }
+        while (rs.next()) {
+            Tarea t = new Tarea(
+                rs.getInt("idTarea"),
+                rs.getString("titulo"),
+                rs.getInt("prioridad"),
+                rs.getBoolean("estado"),
+                rs.getBoolean("especial"),
+                rs.getDate("fecha"),
+                rs.getDate("creado").toLocalDate(),
+                rs.getDate("modificado").toLocalDate()
+            );
+            lista.add(t);
         }
-
-        return tareas;
     }
+    return lista;
+}
+   
+   public void restaurarTarea(int idTarea) throws SQLException {
+    // PostgreSQL/MySQL (BOOLEAN):
+    String sql = "UPDATE Tarea SET eliminada = 0 WHERE idTarea = ?";
+
+    // SQL Server/Oracle (0/1):
+    // String sql = "UPDATE Tarea SET eliminada = 0 WHERE idTarea = ?";
+
+    try (Connection conn = ConexionBD.conectar();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, idTarea);
+        stmt.executeUpdate();
+    }
+}
 
     // Método 3 eliminar tarea (desasignar, no borrar)
     public void eliminarTarea(int idTarea) throws SQLException {

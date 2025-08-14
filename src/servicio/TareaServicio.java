@@ -3,21 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package servicio;
-
-/**
- *
- * @author jainer Said Garcia Gonzalez
- */
-
-
 import dao.TareaDAO;
 import dominio.Tarea;
 import dominio.ExcepcionValidacion;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+/**
+ *
+ * @author jainer Said 
+ */
+
+
 
 public class TareaServicio {
     private TareaDAO tareaDAO;
@@ -58,6 +56,18 @@ public class TareaServicio {
         if (tarea.getPrioridad() < 1 || tarea.getPrioridad() > 3) {
             throw new ExcepcionValidacion("La prioridad debe estar entre 1 y 3.");
         }
+    }
+
+    public void alternarEstado(int idTarea) throws SQLException {
+        tareaDAO.alternarEstado(idTarea);
+    }
+
+    public void marcarEliminada(int idTarea) throws SQLException {
+        tareaDAO.marcarEliminada(idTarea);
+    }
+
+    public void restaurarTarea(int idTarea) throws SQLException {
+        tareaDAO.restaurarTarea(idTarea);
     }
 }
 

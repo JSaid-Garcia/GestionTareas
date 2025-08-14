@@ -13,12 +13,17 @@ import java.sql.SQLException;
  */
 
 public class ConexionBD {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=GestorTareas";
+//    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=GestorTareas";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;"
+        + "databaseName=GestorTareas;"
+        + "integratedSecurity=true;"
+        + "trustServerCertificate=true;";
     private static final String USUARIO = "Said";
     private static final String CLAVE = "123456";
     
     
     public static Connection conectar() throws SQLException {
+       // return DriverManager.getConnection(URL);
         return DriverManager.getConnection(URL, USUARIO, CLAVE);
     }
     
